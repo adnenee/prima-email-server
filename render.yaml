@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: prima-email-server
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: EMAIL_USER
+        value: primaarg1@gmail.com
+      - key: EMAIL_PASS
+        sync: false  # Set this manually in Render dashboard for security
