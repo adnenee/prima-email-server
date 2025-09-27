@@ -19,16 +19,20 @@ console.log('- EMAIL_PASS:', process.env.EMAIL_PASS ? '✅ SET (length: ' + proc
 
 // Email configuration - Uses environment variables for security
 const EMAIL_CONFIG = {
-    service: 'gmail',
+    host: 'smtp-relay.brevo.com',
+    port: 587,
+    secure: false,
     auth: {
-        user: process.env.EMAIL_USER || 'primaarg1@gmail.com',
-        pass: process.env.EMAIL_PASS || 'your-app-password'
+        user: process.env.EMAIL_USER || '971979002@smtp-brevo.com',
+        pass: process.env.EMAIL_PASS || 'LcRqp59AKEWT0FV8'
     }
 };
 
 // 🔍 DEBUG: Log email configuration (safely)
 console.log('🔍 DEBUG: Email Configuration:');
-console.log('- Service: gmail');
+console.log('- Host:', EMAIL_CONFIG.host);
+console.log('- Port:', EMAIL_CONFIG.port);
+console.log('- Secure:', EMAIL_CONFIG.secure);
 console.log('- User:', EMAIL_CONFIG.auth.user);
 console.log('- Pass:', EMAIL_CONFIG.auth.pass ? 'SET (length: ' + EMAIL_CONFIG.auth.pass.length + ')' : 'NOT SET');
 console.log('- Pass starts with:', EMAIL_CONFIG.auth.pass ? EMAIL_CONFIG.auth.pass.substring(0, 4) + '...' : 'N/A');
