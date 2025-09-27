@@ -57,7 +57,7 @@ transporter.verify((error, success) => {
     }
 });
 
-// Send email endpoint
+// Send email endpoint - Using Brevo HTTP API (SMTP blocked by Render)
 app.post('/send-email', async (req, res) => {
     try {
         console.log('🔍 DEBUG: Received email request');
@@ -79,51 +79,66 @@ app.post('/send-email', async (req, res) => {
             });
         }
 
-        console.log('🔍 DEBUG: Creating mail options...');
-        const mailOptions = {
-            from: `"PRIMA System" <${EMAIL_CONFIG.auth.user}>`,
-            to: to,
-            subject: subject,
-            html: html,
-            text: text
-        };
+        console.log('🔍 DEBUG: Using Brevo HTTP API (SMTP blocked by Render)...');
         
-        console.log('🔍 DEBUG: Mail options created:', {
-            from: mailOptions.from,
-            to: mailOptions.to,
-            subject: mailOptions.subject,
-            hasHtml: !!mailOptions.html,
-            hasText: !!mailOptions.text
+        // Use Brevo HTTP API instead of SMTP
+        const brevoApiKey = process.env.BREVO_API_KEY || 'your-brevo-api-key';
+        console.log('🔍 DEBUG: Using Brevo API key:', brevoApiKey ? 'SET (length: ' + brevoApiKey.length + ')' : 'NOT SET');
+        
+        const brevoResponse = await fetch('https://api.brevo.com/v3/smtp/email', {
+            method: 'POST',
+            headers: {
+                'api-key': brevoApiKey,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                sender: { 
+                    email: 'primaarg1@gmail.com', 
+                    name: 'PRIMA System' 
+                },
+                to: [{ email: to }],
+                subject: subject,
+                htmlContent: html || text,
+                textContent: text
+            })
         });
 
-        console.log('🔍 DEBUG: Attempting to send email...');
-        const info = await transporter.sendMail(mailOptions);
+        console.log('🔍 DEBUG: Brevo API response status:', brevoResponse.status);
         
-        console.log('✅ DEBUG: Email sent successfully!');
-        console.log('✅ DEBUG: Message ID:', info.messageId);
-        console.log('✅ DEBUG: Response:', info.response);
-        
-        res.json({
-            success: true,
-            message: 'Email sent successfully',
-            messageId: info.messageId
-        });
+        if (brevoResponse.ok) {
+            const result = await brevoResponse.json();
+            console.log('✅ DEBUG: Email sent successfully via Brevo API!');
+            console.log('✅ DEBUG: Message ID:', result.messageId);
+            
+            res.json({
+                success: true,
+                message: 'Email sent successfully via Brevo API',
+                messageId: result.messageId,
+                service: 'brevo-api'
+            });
+        } else {
+            const errorData = await brevoResponse.json();
+            console.error('❌ DEBUG: Brevo API error:', errorData);
+            
+            res.status(500).json({
+                success: false,
+                message: 'Failed to send email via Brevo API',
+                error: errorData.message || 'Unknown API error',
+                service: 'brevo-api'
+            });
+        }
 
     } catch (error) {
         console.error('❌ DEBUG: Email sending error occurred');
         console.error('❌ DEBUG: Error type:', error.constructor.name);
         console.error('❌ DEBUG: Error message:', error.message);
-        console.error('❌ DEBUG: Error code:', error.code);
-        console.error('❌ DEBUG: Error response:', error.response);
-        console.error('❌ DEBUG: Error responseCode:', error.responseCode);
         console.error('❌ DEBUG: Full error object:', error);
         
         res.status(500).json({
             success: false,
             message: 'Failed to send email',
             error: error.message,
-            errorCode: error.code,
-            errorResponse: error.response
+            service: 'brevo-api'
         });
     }
 });
