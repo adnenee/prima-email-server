@@ -35,7 +35,7 @@ console.log('- Pass starts with:', EMAIL_CONFIG.auth.pass ? EMAIL_CONFIG.auth.pa
 
 // Create transporter
 console.log('🔍 DEBUG: Creating nodemailer transporter...');
-const transporter = nodemailer.createTransporter(EMAIL_CONFIG);
+const transporter = nodemailer.createTransport(EMAIL_CONFIG);
 
 // Test email configuration
 console.log('🔍 DEBUG: Testing email configuration...');
