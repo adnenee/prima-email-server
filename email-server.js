@@ -18,24 +18,26 @@ console.log('- EMAIL_USER:', process.env.EMAIL_USER ? '✅ SET' : '❌ MISSING')
 console.log('- EMAIL_PASS:', process.env.EMAIL_PASS ? '✅ SET (length: ' + process.env.EMAIL_PASS.length + ')' : '❌ MISSING');
 
 // Email configuration - Uses environment variables for security
+// REVERTING TO ORIGINAL WORKING CONFIGURATION
 const EMAIL_CONFIG = {
-    host: 'smtp-relay.brevo.com',
-    port: 587,
-    secure: false,
+    service: 'gmail',
     auth: {
-        user: process.env.EMAIL_USER || '971979002@smtp-brevo.com',
-        pass: process.env.EMAIL_PASS || 'LcRqp59AKEWT0FV8'
+        user: process.env.EMAIL_USER || 'primaarg1@gmail.com',
+        pass: process.env.EMAIL_PASS || 'your-app-password'
     }
 };
 
 // 🔍 DEBUG: Log email configuration (safely)
 console.log('🔍 DEBUG: Email Configuration:');
-console.log('- Host:', EMAIL_CONFIG.host);
-console.log('- Port:', EMAIL_CONFIG.port);
-console.log('- Secure:', EMAIL_CONFIG.secure);
+console.log('- Service: gmail');
 console.log('- User:', EMAIL_CONFIG.auth.user);
 console.log('- Pass:', EMAIL_CONFIG.auth.pass ? 'SET (length: ' + EMAIL_CONFIG.auth.pass.length + ')' : 'NOT SET');
 console.log('- Pass starts with:', EMAIL_CONFIG.auth.pass ? EMAIL_CONFIG.auth.pass.substring(0, 4) + '...' : 'N/A');
+console.log('🔍 DEBUG: Gmail App Password Analysis:');
+console.log('- Expected length: 16 characters');
+console.log('- Actual length:', EMAIL_CONFIG.auth.pass ? EMAIL_CONFIG.auth.pass.length : 'N/A');
+console.log('- Contains spaces:', EMAIL_CONFIG.auth.pass ? EMAIL_CONFIG.auth.pass.includes(' ') : 'N/A');
+console.log('- Format check:', EMAIL_CONFIG.auth.pass && EMAIL_CONFIG.auth.pass.length === 16 ? '✅ CORRECT' : '❌ INCORRECT');
 
 // Create transporter
 console.log('🔍 DEBUG: Creating nodemailer transporter...');
