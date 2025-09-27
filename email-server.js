@@ -17,13 +17,12 @@ console.log('- PORT:', process.env.PORT);
 console.log('- EMAIL_USER:', process.env.EMAIL_USER ? '✅ SET' : '❌ MISSING');
 console.log('- EMAIL_PASS:', process.env.EMAIL_PASS ? '✅ SET (length: ' + process.env.EMAIL_PASS.length + ')' : '❌ MISSING');
 
-// Email configuration - Uses environment variables for security
 // REVERTING TO ORIGINAL WORKING CONFIGURATION
 const EMAIL_CONFIG = {
     service: 'gmail',
     auth: {
         user: process.env.EMAIL_USER || 'primaarg1@gmail.com',
-        pass: process.env.EMAIL_PASS || 'your-app-password'
+        pass: process.env.EMAIL_PASS || 'tpko zgpk ctbi avuy'
     }
 };
 
